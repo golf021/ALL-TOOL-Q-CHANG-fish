@@ -136,6 +136,7 @@
       text-decoration: none;
       color: white;
       transition: all 0.2s ease;
+      position: relative;
     }
     
     .card:hover {
@@ -159,6 +160,85 @@
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
       color: rgba(255, 255, 255, 0.9);
       width: 100%;
+    }
+    
+    /* ปุ่มคัดลอกลิงค์ */
+    .copy-link-btn {
+      position: absolute;
+      top: 2px;
+      right: 1px;
+      width: 22px;
+      height: 22px;
+      background: rgba(255, 215, 0, 0.7);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      z-index: 10;
+    }
+    
+    .copy-link-btn:hover {
+      background: rgba(255, 215, 0, 1);
+      transform: scale(1.1);
+    }
+    
+    /* Tooltip */
+    .tooltip {
+      position: relative;
+    }
+    
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 120px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px 0;
+      position: absolute;
+      z-index: 20;
+      top: -30px;
+      right: -10px;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    /* แจ้งเตือนการคัดลอก */
+    .copy-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 215, 0, 0.9);
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 9999;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
     }
     
     /* Manual Cards */
@@ -513,10 +593,16 @@
         <span class="card-title">คู่มือออก QR</span>
       </a>
 
-      <a href="#" class="card manual-trigger" data-manual="credit">
+      <!-- คู่มือบัตรเครดิต + ปุ่มคัดลอก -->
+      <div class="card manual-trigger" data-manual="credit" style="cursor: pointer; position: relative;">
         <img src="https://i.postimg.cc/k4Vvj4Sm/Untitled-1.jpg" alt="บัตรเครดิต" class="card-image">
         <span class="card-title">คู่มือบัตรเครดิด</span>
-      </a>
+        <!-- ปุ่มคัดลอกลิงค์ที่มุมขวาบน -->
+        <div class="copy-link-btn tooltip" onclick="copyCreditLink(event)" title="คัดลอกลิงค์">
+          <i class="fas fa-copy"></i>
+          <span class="tooltiptext">คัดลอกลิงค์</span>
+        </div>
+      </div>
 
       <a href="https://golf021.github.io/Estimate-Roof01/" target="_blank" class="card">
         <img src="https://i.postimg.cc/hj97bRz4/5255.jpg" alt="คำนวณ" class="card-image">
@@ -637,6 +723,50 @@
         { src: 'https://i.postimg.cc/Jh0BrB0C/8.jpg', caption: 'ขั้นตอนที่ 8' }
       ]
     };
+    
+    // ฟังก์ชันคัดลอกลิงค์
+    function copyCreditLink(event) {
+      event.stopPropagation(); // ป้องกันไม่ให้เกิด event การคลิกที่การ์ด
+      
+      const link = 'https://golf021.github.io/Q-CHANG-credit-card/';
+      
+      // ใช้ Clipboard API
+      navigator.clipboard.writeText(link).then(() => {
+        showNotification('✅ คัดลอกลิงค์แล้ว!');
+      }).catch(err => {
+        // Fallback สำหรับ browser ที่ไม่รองรับ
+        const textarea = document.createElement('textarea');
+        textarea.value = link;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showNotification('✅ คัดลอกลิงค์แล้ว!');
+      });
+    }
+    
+    // แสดงการแจ้งเตือน
+    function showNotification(message) {
+      // ลบการแจ้งเตือนเก่าถ้ามี
+      const oldNotification = document.querySelector('.copy-notification');
+      if (oldNotification) {
+        oldNotification.remove();
+      }
+      
+      // สร้าง element แจ้งเตือนใหม่
+      const notification = document.createElement('div');
+      notification.className = 'copy-notification';
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      // ซ่อนการแจ้งเตือนหลังจาก 2 วินาที
+      setTimeout(() => {
+        notification.style.animation = 'slideIn 0.3s reverse';
+        setTimeout(() => {
+          notification.remove();
+        }, 300);
+      }, 2000);
+    }
     
     // โหลดรูปภาพ
     function loadImages() {
