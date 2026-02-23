@@ -2,8 +2,8 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>All in One</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>All in One - ปรับจออัตโนมัติ</title>
   <!-- ใช้ไอคอนจาก Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <!-- Google Fonts -->
@@ -25,7 +25,7 @@
       position: relative;
     }
     
-    /* วิดีโอพื้นหลังตู้ปลา */
+    /* ===== วิดีโอพื้นหลัง - ปรับอัตโนมัติทุกจอ ===== */
     .video-background {
       position: fixed;
       top: 0;
@@ -34,21 +34,60 @@
       height: 100%;
       z-index: -1;
       overflow: hidden;
+      background: linear-gradient(135deg, #0a2f6c 0%, #1a4a8a 100%); /* สีพื้นหลังสำรอง */
     }
     
     .video-background video {
-      min-width: 100%;
-      min-height: 100%;
-      width: auto;
-      height: auto;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      object-fit: cover;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: cover; /* ปรับให้เต็มจอทุกขนาด ตัดขอบอัตโนมัติ */
+      object-position: center;
+      transition: all 0.3s ease;
     }
     
-    /* ลบ overlay ทิ้ง ให้เห็นตู้ปลาชัดขึ้น */
+    /* เพิ่ม overlay โปร่งใสเล็กน้อยให้ข้อความชัดขึ้น */
+    .video-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.15); /* โปร่งใสมาก */
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    /* ===== Responsive ปรับตามอัตราส่วนหน้าจอ ===== */
+    @media (min-aspect-ratio: 16/9) {
+      .video-background video {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+      }
+    }
+    
+    @media (max-aspect-ratio: 16/9) {
+      .video-background video {
+        width: auto;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+    
+    /* สำหรับจอที่แคบมากๆ (แนวตั้ง) */
+    @media (max-width: 480px) and (orientation: portrait) {
+      .video-background video {
+        object-fit: cover;
+        width: auto;
+        height: 100%;
+      }
+    }
     
     .container {
       max-width: 1200px;
@@ -57,7 +96,7 @@
       z-index: 2;
     }
     
-    /* Header แบบบางเบา */
+    /* Header */
     .header {
       margin-bottom: 15px;
     }
@@ -76,7 +115,7 @@
       margin-top: 2px;
     }
     
-    /* Cards Grid - โปร่งใสมากขึ้น */
+    /* Cards Grid */
     .icon-links {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -85,8 +124,8 @@
     }
     
     .card {
-      background: rgba(0, 0, 0, 0.15);  /* โปร่งใสมากขึ้น */
-      backdrop-filter: blur(3px);        /* เบลอน้อยลง */
+      background: rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(3px);
       -webkit-backdrop-filter: blur(3px);
       border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -122,12 +161,7 @@
       width: 100%;
     }
     
-    /* ลบปุ่มคัดลอกลิงก์ */
-    .copy-link-btn {
-      display: none;
-    }
-    
-    /* Manual Cards - ปรับให้เล็กลง */
+    /* Manual Cards */
     .manual-card {
       background: rgba(0, 0, 0, 0.2);
       border-radius: 12px;
@@ -242,7 +276,7 @@
     .prev { left: 10px; }
     .next { right: 10px; }
     
-    /* To-Do List - ย้ายไปขวา */
+    /* To-Do List */
     .todo-container {
       position: fixed;
       bottom: 10px;
@@ -363,7 +397,7 @@
       background: rgba(255, 100, 100, 0.1);
     }
     
-    /* Footer - ย่อขนาด */
+    /* Footer */
     .footer {
       position: fixed;
       bottom: 0;
@@ -397,16 +431,22 @@
       }
       .todo-container {
         width: 200px;
+        bottom: 35px; /* ไม่ให้ชน footer */
       }
     }
   </style>
 </head>
 <body>
-  <!-- วิดีโอพื้นหลังตู้ปลา -->
+  <!-- วิดีโอพื้นหลังตู้ปลา - ปรับอัตโนมัติทุกจอ -->
   <div class="video-background">
-    <video autoplay loop muted playsinline>
+    <video autoplay loop muted playsinline poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230a2f6c'/%3E%3Cstop offset='100%25' stop-color='%231a4a8a'/%3E%3C/linearGradient%3E%3Crect width='100%25' height='100%25' fill='url(%23g)'/%3E%3C/svg%3E">
+      <!-- วิดีโอหลัก -->
       <source src="https://res.cloudinary.com/dcz5zmyig/video/upload/v1771776925/qaquarium_zqaj65.mp4" type="video/mp4">
+      <!-- ถ้าวิดีโอไม่โหลด จะแสดงพื้นหลังสี -->
+      Your browser does not support the video tag.
     </video>
+    <!-- Overlay โปร่งใสเพื่อให้ข้อความชัดขึ้น -->
+    <div class="video-overlay"></div>
   </div>
   
   <!-- Modal -->
@@ -417,7 +457,7 @@
     <img class="modal-content" id="modalImage">
   </div>
 
-  <!-- To-Do List (ย้ายไปขวา) -->
+  <!-- To-Do List -->
   <div class="todo-container" id="todoContainer">
     <div class="todo-header">
       <i class="fas fa-check-circle"></i>
@@ -436,7 +476,7 @@
       <p class="subtitle">เครื่องมือทำงาน</p>
     </div>
     
-    <!-- Cards Grid -->
+    <!-- Cards Grid (เหมือนเดิม) -->
     <div class="icon-links">
       <a href="https://sims.q-chang.com/sims/superadmin/jobs" target="_blank" class="card">
         <img src="https://i.postimg.cc/k4Vvj4Sm/Untitled-1.jpg" alt="SIMS" class="card-image">
@@ -495,12 +535,12 @@
       
       <a href="https://golf021.github.io/picroof_by_GOLF/" target="_blank" class="card">
         <img src="https://i.postimg.cc/26s1JmH4/dji-fly-20230520-161306-238-1684574294052-photo-optimized.jpg" alt="ภาพหลังคา" class="card-image">
-        <span class="card-title">ภาพมุงหลังคา Demo</span>
+        <span class="card-title">ภาพมุงหลังคา</span>
       </a>
 
       <a href="https://www.tiktok.com/@golf..roof" target="_blank" class="card">
         <img src="https://i.postimg.cc/MKYvtJvL/apps-4784-13634052595610511-c45457c9-b4af-46b0-8e61-8d7c0aec3f56.png" alt="TikTok" class="card-image">
-        <span class="card-title">TikTok หลังคา</span>
+        <span class="card-title">TikTok</span>
       </a>
  
       <a href="https://drive.google.com/drive/folders/1Eat68WK3s-2pHkBFhpLUNDJ6vCnZaSGA" target="_blank" class="card">
@@ -567,7 +607,7 @@
   </div>
 
   <script>
-    // ข้อมูลรูปภาพ (ใส่คืนแล้ว)
+    // ข้อมูลรูปภาพ
     const imageSets = {
       sales: [
         { src: 'https://i.postimg.cc/HL073BbR/001.jpg', caption: 'ขั้นตอนที่ 1' },
@@ -605,7 +645,7 @@
       salesDiv.innerHTML = '';
       imageSets.sales.forEach((item, i) => {
         salesDiv.innerHTML += `<div class="manual-image-container" data-manual="sales" data-index="${i}">
-          <img src="${item.src}" class="manual-image">
+          <img src="${item.src}" class="manual-image" loading="lazy">
           <div class="image-caption">${item.caption}</div>
         </div>`;
       });
@@ -615,7 +655,7 @@
       qrDiv.innerHTML = '';
       imageSets.qr.forEach((item, i) => {
         qrDiv.innerHTML += `<div class="manual-image-container" data-manual="qr" data-index="${i}">
-          <img src="${item.src}" class="manual-image">
+          <img src="${item.src}" class="manual-image" loading="lazy">
           <div class="image-caption">${item.caption}</div>
         </div>`;
       });
@@ -625,12 +665,12 @@
       creditDiv.innerHTML = '';
       imageSets.credit.forEach((item, i) => {
         creditDiv.innerHTML += `<div class="manual-image-container" data-manual="credit" data-index="${i}">
-          <img src="${item.src}" class="manual-image">
+          <img src="${item.src}" class="manual-image" loading="lazy">
           <div class="image-caption">${item.caption}</div>
         </div>`;
       });
 
-      // เพิ่ม event listeners ให้กับรูปภาพที่โหลดใหม่
+      // เพิ่ม event listeners ให้กับรูปภาพ
       addImageClickListeners();
     }
     
@@ -646,7 +686,10 @@
       });
     }
 
-    loadImages();
+    // เรียกใช้เมื่อโหลดหน้า
+    document.addEventListener('DOMContentLoaded', function() {
+      loadImages();
+    });
 
     // จัดการคู่มือ
     const manualTriggers = document.querySelectorAll('.manual-trigger');
@@ -756,6 +799,48 @@
     });
     
     renderTodos();
+    
+    // ===== ฟังก์ชันปรับวิดีโอให้พอดีจอเมื่อ resize =====
+    function adjustVideoToFit() {
+      const video = document.querySelector('.video-background video');
+      if (!video) return;
+      
+      // เช็คอัตราส่วนหน้าจอ
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      const windowRatio = windowWidth / windowHeight;
+      
+      // video element จะปรับอัตโนมัติด้วย CSS แล้ว
+      // แต่เราเพิ่ม class เพื่อดีบักได้
+      if (windowRatio > 16/9) {
+        video.classList.add('wide-screen');
+        video.classList.remove('tall-screen');
+      } else {
+        video.classList.add('tall-screen');
+        video.classList.remove('wide-screen');
+      }
+      
+      // console.log('ปรับวิดีโอ: อัตราส่วนหน้าจอ =', windowRatio);
+    }
+    
+    // เรียกใช้เมื่อโหลดหน้าและเมื่อ resize
+    window.addEventListener('load', function() {
+      adjustVideoToFit();
+      
+      // โหลดรูปภาพอีกครั้งเผื่อมีปัญหา
+      setTimeout(loadImages, 100);
+    });
+    
+    window.addEventListener('resize', function() {
+      // Debounce เพื่อไม่ให้เรียกถี่เกินไป
+      clearTimeout(window.resizeTimer);
+      window.resizeTimer = setTimeout(adjustVideoToFit, 100);
+    });
+    
+    // สำหรับมือถือโดยเฉพาะ
+    window.addEventListener('orientationchange', function() {
+      setTimeout(adjustVideoToFit, 200);
+    });
   </script>
 </body>
 </html>
