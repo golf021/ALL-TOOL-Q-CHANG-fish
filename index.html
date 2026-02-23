@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All in One</title>
+  <!-- ใช้ไอคอนจาก Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Kanit', sans-serif;
+      color: white;
+      text-align: center;
+      margin: 0;
+      padding: 15px;
+      min-height: 100vh;
+      position: relative;
+    }
+    
+    /* วิดีโอพื้นหลังตู้ปลา */
+    .video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+    
+    .video-background video {
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+    }
+    
+    /* ลบ overlay ทิ้ง ให้เห็นตู้ปลาชัดขึ้น */
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* Header แบบบางเบา */
+    .header {
+      margin-bottom: 15px;
+    }
+    
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 500;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      color: rgba(255, 255, 255, 0.9);
+      display: inline-block;
+    }
+    
+    .subtitle {
+      font-size: 0.8rem;
+      opacity: 0.6;
+      margin-top: 2px;
+    }
+    
+    /* Cards Grid - โปร่งใสมากขึ้น */
+    .icon-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 6px;
+      justify-content: center;
+    }
+    
+    .card {
+      background: rgba(0, 0, 0, 0.15);  /* โปร่งใสมากขึ้น */
+      backdrop-filter: blur(3px);        /* เบลอน้อยลง */
+      -webkit-backdrop-filter: blur(3px);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 8px 3px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: white;
+      transition: all 0.2s ease;
+    }
+    
+    .card:hover {
+      background: rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 215, 0, 0.3);
+    }
+    
+    .card-image {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .card-title {
+      font-size: 0.75rem;
+      font-weight: 400;
+      line-height: 1.2;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      color: rgba(255, 255, 255, 0.9);
+      width: 100%;
+    }
+    
+    /* ลบปุ่มคัดลอกลิงก์ */
+    .copy-link-btn {
+      display: none;
+    }
+    
+    /* Manual Cards - ปรับให้เล็กลง */
+    .manual-card {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      padding: 15px;
+      margin: 15px 0;
+      backdrop-filter: blur(3px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .manual-header {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    }
+    
+    .manual-title {
+      font-size: 1.1rem;
+      color: rgba(255, 215, 0, 0.9);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .manual-title i {
+      font-size: 1.3rem;
+    }
+    
+    .close-manual {
+      background: rgba(0, 0, 0, 0.3);
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      float: right;
+      margin-top: -30px;
+    }
+    
+    .manual-images {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    
+    .manual-image-container {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 8px;
+      cursor: pointer;
+    }
+    
+    .manual-image {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+    
+    .image-caption {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: rgba(255, 215, 0, 0.8);
+      padding: 3px 8px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+    }
+    
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+    
+    .modal-content {
+      margin: auto;
+      display: block;
+      max-width: 90%;
+      max-height: 80vh;
+      border-radius: 8px;
+      border: 2px solid rgba(255, 215, 0, 0.5);
+    }
+    
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 25px;
+      color: rgba(255, 215, 0, 0.8);
+      font-size: 35px;
+      cursor: pointer;
+    }
+    
+    .nav-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 215, 0, 0.6);
+      font-size: 40px;
+      cursor: pointer;
+      padding: 10px;
+    }
+    
+    .prev { left: 10px; }
+    .next { right: 10px; }
+    
+    /* To-Do List - ย้ายไปขวา */
+    .todo-container {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      width: 270px;
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(4px);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      z-index: 999;
+    }
+    
+    .todo-header {
+      background: rgba(255, 215, 0, 0.2);
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.9rem;
+      border-radius: 12px 12px 0 0;
+    }
+    
+    .todo-input {
+      display: flex;
+      padding: 10px;
+      gap: 8px;
+    }
+    
+    .todo-input input {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      font-size: 0.85rem;
+    }
+    
+    .todo-input input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .todo-input input:focus {
+      outline: 1px solid rgba(255, 215, 0, 0.5);
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .add-todo {
+      background: rgba(255, 215, 0, 0.3);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    
+    .add-todo:hover {
+      background: rgba(255, 215, 0, 0.5);
+      transform: scale(1.1);
+    }
+    
+    .add-todo i {
+      font-size: 14px;
+    }
+    
+    .todo-list {
+      list-style: none;
+      padding: 0 10px 10px 10px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+    
+    .todo-list li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      margin-bottom: 5px;
+      transition: all 0.2s ease;
+    }
+    
+    .todo-list li:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .todo-list li input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      accent-color: rgba(255, 215, 0, 0.8);
+    }
+    
+    .delete-todo {
+      background: none;
+      border: none;
+      color: rgba(255, 100, 100, 0.6);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    
+    .delete-todo:hover {
+      color: rgba(255, 100, 100, 1);
+      background: rgba(255, 100, 100, 0.1);
+    }
+    
+    /* Footer - ย่อขนาด */
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 0.7rem;
+      padding: 5px;
+      background: rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(2px);
+      color: rgba(255, 255, 255, 0.5);
+      z-index: 997;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .icon-links {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .todo-container {
+        width: 240px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .icon-links {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .logo {
+        font-size: 1.5rem;
+      }
+      .todo-container {
+        width: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- วิดีโอพื้นหลังตู้ปลา -->
+  <div class="video-background">
+    <video autoplay loop muted playsinline>
+      <source src="https://res.cloudinary.com/dcz5zmyig/video/upload/v1771776925/qaquarium_zqaj65.mp4" type="video/mp4">
+    </video>
+  </div>
+  
+  <!-- Modal -->
+  <div id="imageModal" class="modal">
+    <span class="close-modal">&times;</span>
+    <span class="nav-button prev" id="prevBtn">&#10094;</span>
+    <span class="nav-button next" id="nextBtn">&#10095;</span>
+    <img class="modal-content" id="modalImage">
+  </div>
+
+  <!-- To-Do List (ย้ายไปขวา) -->
+  <div class="todo-container" id="todoContainer">
+    <div class="todo-header">
+      <i class="fas fa-check-circle"></i>
+      <span>Note</span>
+    </div>
+    <div class="todo-input">
+      <input type="text" id="todoInput" placeholder="เพิ่มรายการ...">
+      <button class="add-todo" id="addTodo"><i class="fas fa-plus"></i></button>
+    </div>
+    <ul class="todo-list" id="todoList"></ul>
+  </div>
+  
+  <div class="container">
+    <div class="header">
+      <h1 class="logo">ALL TOOL</h1>
+      <p class="subtitle">เครื่องมือทำงาน</p>
+    </div>
+    
+    <!-- Cards Grid -->
+    <div class="icon-links">
+      <a href="https://sims.q-chang.com/sims/superadmin/jobs" target="_blank" class="card">
+        <img src="https://i.postimg.cc/k4Vvj4Sm/Untitled-1.jpg" alt="SIMS" class="card-image">
+        <span class="card-title">SIMS</span>
+      </a>
+      
+      <a href="https://partner-portal.q-chang.com/sales-portal" target="_blank" class="card">
+        <img src="https://i.postimg.cc/k4Vvj4Sm/Untitled-1.jpg" alt="CMS 2.0" class="card-image">
+        <span class="card-title">CMS 2.0</span>
+      </a>
+      
+      <a href="https://docs.google.com/spreadsheets/d/13lRuHOcs5g9eEjkIhaHM7FkUVjkFgDKQ4JlwgM0XYjc/edit" target="_blank" class="card">
+        <img src="https://i.postimg.cc/TYtQYrCR/Untitled.png" alt="Excel" class="card-image">
+        <span class="card-title">ติดตามขาย</span>
+      </a>
+      
+      <a href="https://golf021.github.io/-Q-CHANG/" target="_blank" class="card">
+        <img src="https://i.postimg.cc/k4Vvj4Sm/Untitled-1.jpg" alt="ตัวช่วย" class="card-image">
+        <span class="card-title">ช่วยสรุปขาย</span>
+      </a>
+      
+      <a href="https://docs.google.com/spreadsheets/d/1lGTBNMt1Cuc77qPRFjtvS9kOXBrPboPovKIYZ9adZ6g/edit" target="_blank" class="card">
+        <img src="https://i.postimg.cc/k4Vvj4Sm/Untitled-1.jpg" alt="TS Plan" class="card-image">
+        <span class="card-title">TS Plan 2026</span>
+      </a>
+          
+      <a href="#" class="card manual-trigger" data-manual="sales">
+        <img src="https://i.postimg.cc/k4Vvj4Sm/Untitled-1.jpg" alt="คู่มือขาย" class="card-image">
+        <span class="card-title">คู่มือขาย</span>
+      </a>
+      
+      <a href="#" class="card manual-trigger" data-manual="qr">
+        <img src="https://i.postimg.cc/k4Vvj4Sm/Untitled-1.jpg" alt="คู่มือ QR" class="card-image">
+        <span class="card-title">คู่มือออก QR</span>
+      </a>
+
+      <a href="#" class="card manual-trigger" data-manual="credit">
+        <img src="https://i.postimg.cc/k4Vvj4Sm/Untitled-1.jpg" alt="บัตรเครดิต" class="card-image">
+        <span class="card-title">คู่มือบัตรเครดิด</span>
+      </a>
+
+      <a href="https://golf021.github.io/Estimate-Roof01/" target="_blank" class="card">
+        <img src="https://i.postimg.cc/hj97bRz4/5255.jpg" alt="คำนวณ" class="card-image">
+        <span class="card-title">คำนวณหลังคา</span>
+      </a>
+      
+      <a href="https://app.sketchup.com/app" target="_blank" class="card">
+        <img src="https://i.postimg.cc/LsckGXsx/download.jpg" alt="Sketchup" class="card-image">
+        <span class="card-title">Sketchup</span>
+      </a>
+      
+      <a href="https://golf021.github.io/-Cpac/" target="_blank" class="card">
+        <img src="https://i.postimg.cc/j2s7d38C/998899.jpg" alt="CPAC" class="card-image">
+        <span class="card-title">หาระยะแป</span>
+      </a>
+      
+      <a href="https://golf021.github.io/picroof_by_GOLF/" target="_blank" class="card">
+        <img src="https://i.postimg.cc/26s1JmH4/dji-fly-20230520-161306-238-1684574294052-photo-optimized.jpg" alt="ภาพหลังคา" class="card-image">
+        <span class="card-title">ภาพมุงหลังคา</span>
+      </a>
+
+      <a href="https://www.tiktok.com/@golf..roof" target="_blank" class="card">
+        <img src="https://i.postimg.cc/MKYvtJvL/apps-4784-13634052595610511-c45457c9-b4af-46b0-8e61-8d7c0aec3f56.png" alt="TikTok" class="card-image">
+        <span class="card-title">TikTok</span>
+      </a>
+ 
+      <a href="https://drive.google.com/drive/folders/1Eat68WK3s-2pHkBFhpLUNDJ6vCnZaSGA" target="_blank" class="card">
+        <img src="https://i.postimg.cc/c1PzDjd0/Detail-Truss-2025-09-12-1001.png" alt="Truss" class="card-image">
+        <span class="card-title">Detail Truss</span>
+      </a>
+		
+      <a href="https://golf021.github.io/my-map/" class="card">
+        <img src="https://i.postimg.cc/CLHSMfRT/il1.png" alt="MAP" class="card-image">
+        <span class="card-title">MAP QR</span>
+      </a>
+      
+      <a href="https://drive.google.com/drive/folders/1NHGskKEw0R2YTaEjj_Bmw3_V9BaDltZt" target="_blank" class="card">
+        <img src="https://i.postimg.cc/X7hzdCM6/image.jpg" alt="อื่นๆ" class="card-image">
+        <span class="card-title">อื่นๆ</span>
+      </a>
+        
+      <a href="https://www.radio-thai.com/" target="_blank" class="card">
+        <img src="https://i.postimg.cc/tg1qWKvp/1456.jpg" alt="วิทยุ" class="card-image">
+        <span class="card-title">วิทยุ</span>
+      </a>
+
+      <a href="https://tv.trueid.net/th-th" target="_blank" class="card">
+        <img src="https://i.postimg.cc/N0SgvKZx/download.jpg" alt="ทีวี" class="card-image">
+        <span class="card-title">ทีวี</span>
+      </a>
+    </div>
+    
+    <!-- Manual Sections -->
+    <div class="manual-card" id="manualSales" style="display: none;">
+      <div class="manual-header">
+        <div class="manual-title">
+          <i class="fas fa-chart-line"></i> คู่มือขาย
+        </div>
+        <div class="close-manual" data-close="sales">✕</div>
+      </div>
+      <div class="manual-images" id="salesImages"></div>
+    </div>
+    
+    <div class="manual-card" id="manualQR" style="display: none;">
+      <div class="manual-header">
+        <div class="manual-title">
+          <i class="fas fa-qrcode"></i> คู่มือ QR
+        </div>
+        <div class="close-manual" data-close="qr">✕</div>
+      </div>
+      <div class="manual-images" id="qrImages"></div>
+    </div>
+    
+    <div class="manual-card" id="manualCredit" style="display: none;">
+      <div class="manual-header">
+        <div class="manual-title">
+          <i class="fas fa-credit-card"></i> คู่มือบัตร
+        </div>
+        <div class="close-manual" data-close="credit">✕</div>
+      </div>
+      <div class="manual-images" id="creditImages"></div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <span>Anuwat Ch. | <span id="lastUpdated"></span></span>
+    </div>
+  </div>
+
+  <script>
+    // ข้อมูลรูปภาพ (ใส่คืนแล้ว)
+    const imageSets = {
+      sales: [
+        { src: 'https://i.postimg.cc/HL073BbR/001.jpg', caption: 'ขั้นตอนที่ 1' },
+        { src: 'https://i.postimg.cc/GhZ8CZK1/002.jpg', caption: 'ขั้นตอนที่ 2' },
+        { src: 'https://i.postimg.cc/d0Fh7rgj/003.jpg', caption: 'ขั้นตอนที่ 3' },
+        { src: 'https://i.postimg.cc/nL1CqMJV/004.jpg', caption: 'ขั้นตอนที่ 4' },
+        { src: 'https://i.postimg.cc/Wzx3skMp/005.jpg', caption: 'ขั้นตอนที่ 5' },
+        { src: 'https://i.postimg.cc/pXnrqsHh/006.jpg', caption: 'ขั้นตอนที่ 6' }
+      ],
+      qr: [
+        { src: 'https://i.postimg.cc/mZVXrS11/1.jpg', caption: 'ขั้นตอนที่ 1' },
+        { src: 'https://i.postimg.cc/Kz8TptGL/2.jpg', caption: 'ขั้นตอนที่ 2' },
+        { src: 'https://i.postimg.cc/nrQCNk6K/3.jpg', caption: 'ขั้นตอนที่ 3' },
+        { src: 'https://i.postimg.cc/Z0tCmNm4/4.jpg', caption: 'ขั้นตอนที่ 4' },
+        { src: 'https://i.postimg.cc/PfLytkH2/5.jpg', caption: 'ขั้นตอนที่ 5' },
+        { src: 'https://i.postimg.cc/05LfjH22/6.jpg', caption: 'ขั้นตอนที่ 6' },
+        { src: 'https://i.postimg.cc/wjzQcymW/7.jpg', caption: 'ขั้นตอนที่ 7' }
+      ],
+      credit: [
+        { src: 'https://i.postimg.cc/rpfCgk0y/1.jpg', caption: 'ขั้นตอนที่ 1' },
+        { src: 'https://i.postimg.cc/KjMPZ39c/2.jpg', caption: 'ขั้นตอนที่ 2' },
+        { src: 'https://i.postimg.cc/L4YBkGH8/3.jpg', caption: 'ขั้นตอนที่ 3' },
+        { src: 'https://i.postimg.cc/htr9PBrF/4.jpg', caption: 'ขั้นตอนที่ 4' },
+        { src: 'https://i.postimg.cc/ydwRrYV8/5.jpg', caption: 'ขั้นตอนที่ 5' },
+        { src: 'https://i.postimg.cc/bYtkSbTb/6.jpg', caption: 'ขั้นตอนที่ 6' },
+        { src: 'https://i.postimg.cc/y8VZGGzP/7.jpg', caption: 'ขั้นตอนที่ 7' },
+        { src: 'https://i.postimg.cc/Jh0BrB0C/8.jpg', caption: 'ขั้นตอนที่ 8' }
+      ]
+    };
+    
+    // โหลดรูปภาพ
+    function loadImages() {
+      // Sales images
+      const salesDiv = document.getElementById('salesImages');
+      salesDiv.innerHTML = '';
+      imageSets.sales.forEach((item, i) => {
+        salesDiv.innerHTML += `<div class="manual-image-container" data-manual="sales" data-index="${i}">
+          <img src="${item.src}" class="manual-image">
+          <div class="image-caption">${item.caption}</div>
+        </div>`;
+      });
+      
+      // QR images
+      const qrDiv = document.getElementById('qrImages');
+      qrDiv.innerHTML = '';
+      imageSets.qr.forEach((item, i) => {
+        qrDiv.innerHTML += `<div class="manual-image-container" data-manual="qr" data-index="${i}">
+          <img src="${item.src}" class="manual-image">
+          <div class="image-caption">${item.caption}</div>
+        </div>`;
+      });
+      
+      // Credit images
+      const creditDiv = document.getElementById('creditImages');
+      creditDiv.innerHTML = '';
+      imageSets.credit.forEach((item, i) => {
+        creditDiv.innerHTML += `<div class="manual-image-container" data-manual="credit" data-index="${i}">
+          <img src="${item.src}" class="manual-image">
+          <div class="image-caption">${item.caption}</div>
+        </div>`;
+      });
+
+      // เพิ่ม event listeners ให้กับรูปภาพที่โหลดใหม่
+      addImageClickListeners();
+    }
+    
+    // เพิ่ม event listeners สำหรับ Modal
+    function addImageClickListeners() {
+      document.querySelectorAll('.manual-image-container').forEach(container => {
+        container.addEventListener('click', () => {
+          currentSet = container.dataset.manual;
+          currentIndex = parseInt(container.dataset.index);
+          modalImg.src = imageSets[currentSet][currentIndex].src;
+          modal.style.display = 'block';
+        });
+      });
+    }
+
+    loadImages();
+
+    // จัดการคู่มือ
+    const manualTriggers = document.querySelectorAll('.manual-trigger');
+    const manuals = {
+      sales: document.getElementById('manualSales'),
+      qr: document.getElementById('manualQR'),
+      credit: document.getElementById('manualCredit')
+    };
+    
+    manualTriggers.forEach(trigger => {
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        const type = trigger.dataset.manual;
+        
+        // ซ่อนทั้งหมด
+        Object.values(manuals).forEach(m => m.style.display = 'none');
+        
+        // แสดงอันที่เลือก
+        manuals[type].style.display = 'block';
+        manuals[type].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+    
+    // ปิดคู่มือ
+    document.querySelectorAll('.close-manual').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.dataset.close;
+        manuals[type].style.display = 'none';
+      });
+    });
+
+    // Modal
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    let currentSet = 'sales', currentIndex = 0;
+
+    document.querySelector('.close-modal').onclick = () => modal.style.display = 'none';
+    
+    document.getElementById('prevBtn').onclick = () => {
+      currentIndex--;
+      if (currentIndex < 0) currentIndex = imageSets[currentSet].length - 1;
+      modalImg.src = imageSets[currentSet][currentIndex].src;
+    };
+    
+    document.getElementById('nextBtn').onclick = () => {
+      currentIndex++;
+      if (currentIndex >= imageSets[currentSet].length) currentIndex = 0;
+      modalImg.src = imageSets[currentSet][currentIndex].src;
+    };
+
+    // คลิกพื้นหลัง modal เพื่อปิด
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // To-Do List
+    let todos = JSON.parse(localStorage.getItem('todos')) || [];
+    const todoList = document.getElementById('todoList');
+    const todoInput = document.getElementById('todoInput');
+    
+    function renderTodos() {
+      todoList.innerHTML = '';
+      todos.forEach((todo, i) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <input type="checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTodo(${i})">
+          <span style="flex:1; ${todo.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${todo.text}</span>
+          <button class="delete-todo" onclick="deleteTodo(${i})"><i class="fas fa-trash"></i></button>
+        `;
+        todoList.appendChild(li);
+      });
+    }
+    
+    window.toggleTodo = (i) => {
+      todos[i].completed = !todos[i].completed;
+      localStorage.setItem('todos', JSON.stringify(todos));
+      renderTodos();
+    };
+    
+    window.deleteTodo = (i) => {
+      todos.splice(i, 1);
+      localStorage.setItem('todos', JSON.stringify(todos));
+      renderTodos();
+    };
+    
+    document.getElementById('addTodo').onclick = () => {
+      if (todoInput.value.trim()) {
+        todos.push({ text: todoInput.value, completed: false });
+        localStorage.setItem('todos', JSON.stringify(todos));
+        renderTodos();
+        todoInput.value = '';
+      }
+    };
+
+    // กด Enter เพื่อเพิ่มรายการ
+    todoInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('addTodo').click();
+      }
+    });
+    
+    // วันที่
+    document.getElementById('lastUpdated').textContent = new Date().toLocaleDateString('th-TH', {
+      year: 'numeric', month: 'short', day: 'numeric'
+    });
+    
+    renderTodos();
+  </script>
+</body>
+</html>
